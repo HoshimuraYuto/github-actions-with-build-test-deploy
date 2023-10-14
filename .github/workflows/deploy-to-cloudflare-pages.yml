@@ -25,6 +25,7 @@ jobs:
         with:
           name: build-artifacts
           path: ./out
+          retention-days: 1
 
   test:
     needs: build
