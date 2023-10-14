@@ -1,4 +1,4 @@
-# node-build-test-deploy
+# github-actions-with-build-test-deploy
 
 This repository offers a simple example of using GitHub actions for building, testing, and deploying code.
 
