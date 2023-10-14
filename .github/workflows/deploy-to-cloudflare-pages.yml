@@ -71,8 +71,31 @@ jobs:
           path: playwright-report/
           retention-days: 1
 
+  test-ui:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Build Storybook
+        run: pnpm build:storybook --quiet
+
+      - name: UI test
+        run: |
+          pnpx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
+            "pnpx http-server storybook-static --port 6006 --silent" \
+            "pnpx wait-on tcp:6006 && pnpm test:storybook"
+
   deploy:
-    needs: [test-unit, test-e2e]
+    needs: [test-unit, test-e2e, test-ui]
     runs-on: ubuntu-latest
     permissions:
       contents: read
